@@ -1,1 +1,1 @@
-This code connect to Leap motion controller and extract hand and finger features.
+This code connect to Leap motion controller and extract hand and finger features using python.
