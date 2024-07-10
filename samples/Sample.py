@@ -6,18 +6,21 @@
 # between Leap Motion and you, your company or other organization.             #
 ################################################################################
 
-import Leap, sys, _thread, time
+import Leap, sys, thread, time
 
 
 class SampleListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
+    
 
     def on_init(self, controller):
         print("Initialized")
 
     def on_connect(self, controller):
         print("Connected")
+
+       
 
     def on_disconnect(self, controller):
         # Note: not dispatched when running in a debugger.
@@ -30,16 +33,16 @@ class SampleListener(Leap.Listener):
         # Get the most recent frame and report some basic information
         frame = controller.frame()
 
-        print("Frame id: %d, timestamp: %d, hands: %d, fingers: %d" % (
-              frame.id, frame.timestamp, len(frame.hands), len(frame.fingers)))
+        print("Frame id: %d, timestamp: %d, hands: %d, fingers: %d, tools: %d" % (
+              frame.id, frame.timestamp, len(frame.hands), len(frame.fingers), len(frame.tools)))
 
         # Get hands
         for hand in frame.hands:
 
             handType = "Left hand" if hand.is_left else "Right hand"
 
-            print("  %s, id %d, position: %s" % (
-                handType, hand.id, hand.palm_position))
+            print("  %s, id %d, position:+ %s, velocity: %s, grab strength: %s, pinch_strength: %s " % (
+                handType, hand.id, hand.palm_position,hand.palm_velocity,hand.grab_strength,hand.pinch_strength))
 
             # Get the hand's normal vector and direction
             normal = hand.palm_normal
@@ -50,6 +53,11 @@ class SampleListener(Leap.Listener):
                 direction.pitch * Leap.RAD_TO_DEG,
                 normal.roll * Leap.RAD_TO_DEG,
                 direction.yaw * Leap.RAD_TO_DEG))
+            
+            sphere_center = hand.sphere_center
+            sphere_diameter = 2 * hand.sphere_radius
+            print("sphere center: %s, sphere diameter: %s" % (sphere_center,sphere_diameter))
+            
 
             # Get arm bone
             arm = hand.arm
@@ -60,7 +68,8 @@ class SampleListener(Leap.Listener):
 
             # Get fingers
             for finger in hand.fingers:
-
+                
+                
                 print("    %s finger, id: %d, length: %fmm, width: %fmm" % (
                     self.finger_names[finger.type],
                     finger.id,
@@ -76,8 +85,17 @@ class SampleListener(Leap.Listener):
                         bone.next_joint,
                         bone.direction))
 
-        if not frame.hands.is_empty:
+        # Get tools
+        for tool in frame.tools:
+
+            print("  Tool id: %d, position: %s, direction: %s" % (
+                tool.id, tool.tip_position, tool.direction))
+
+        
+        if not (frame.hands.is_empty):
             print("")
+
+   
 
 def main():
     # Create a sample listener and controller
