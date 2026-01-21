@@ -4,7 +4,7 @@ This repository contains Python code for interfacing with a Leap Motion controll
 
 ## System Demonstration
 
-<img src="leap_motion_hand_demo.jpg" width="600" alt="Leap Motion hand tracking demo">
+<img src="leap_motion_hand_demo.jpg" width="400" alt="Leap Motion hand tracking demo">
 
 *Real-time hand tracking using a Leap Motion controller, showing detected hand joints and finger key points used for kinematic feature extraction.*
 
